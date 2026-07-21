@@ -205,6 +205,7 @@ http://localhost:8501
 
 Người dùng nhập các thông tin của căn nhà và hệ thống sẽ trả về giá dự đoán.
 
+```text
 📁 Cấu trúc thư mục
 ames-house-price-prediction/
 ├── app/
@@ -219,7 +220,8 @@ ames-house-price-prediction/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
-
+```
+```text
 Trong đó:
 
 app/: chứa source code ứng dụng Streamlit
@@ -257,3 +259,4 @@ Deploy ứng dụng lên Streamlit Community Cloud
 Xây dựng API bằng FastAPI
 👨‍💻 Tác giả
 Đặng Trung Hiếu
+```
