@@ -1,0 +1,32 @@
+{
+  "selected_model": "Lasso",
+  "cv_results": [
+    {
+      "Model": "Lasso",
+      "CV_RMSE_Mean": 19629.33351591761,
+      "CV_RMSE_Std": 1336.4683828709963,
+      "CV_MAE_Mean": 13516.266536925705,
+      "CV_R2_Mean": 0.9351000145913713
+    },
+    {
+      "Model": "Ridge",
+      "CV_RMSE_Mean": 19734.28658919585,
+      "CV_RMSE_Std": 1414.6036137540907,
+      "CV_MAE_Mean": 13559.347760343042,
+      "CV_R2_Mean": 0.9343249189754432
+    },
+    {
+      "Model": "Linear Regression",
+      "CV_RMSE_Mean": 23042.095195159618,
+      "CV_RMSE_Std": 2084.3632585203036,
+      "CV_MAE_Mean": 15054.95445855516,
+      "CV_R2_Mean": 0.9106483699921233
+    }
+  ],
+  "test_metrics": {
+    "model": "Lasso",
+    "mae": 14105.598153713727,
+    "rmse": 21111.962935301737,
+    "r2": 0.9418910008594006
+  }
+}
