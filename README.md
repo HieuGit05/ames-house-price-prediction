@@ -1,357 +1,259 @@
-# Ames House Price Prediction
+# 🏠 Dự đoán giá nhà Ames Housing
 
-Dự án Machine Learning dự đoán giá bán nhà trên bộ dữ liệu **Ames Housing**. Dự án xây dựng một quy trình hồi quy có thể tái lập, bao gồm khám phá dữ liệu, xử lý dữ liệu thiếu, feature engineering, cross-validation, tối ưu siêu tham số và triển khai mô hình bằng Streamlit.
+Giá nhà phụ thuộc vào nhiều yếu tố như diện tích, chất lượng xây dựng, vị trí, số phòng, năm xây dựng và các tiện ích đi kèm.
 
-Dự án được thực hiện nhằm củng cố kiến thức về Machine Learning và xây dựng một sản phẩm cá nhân có thể trình bày trong CV hoặc portfolio.
+Dự án này xây dựng một hệ thống Machine Learning nhằm dự đoán giá bán nhà trên bộ dữ liệu **Ames Housing**. Hệ thống thực hiện các bước từ phân tích dữ liệu, xử lý dữ liệu, xây dựng mô hình đến triển khai ứng dụng Web bằng Streamlit.
 
----
+## 📌 Mục tiêu dự án
 
-## Kết quả mô hình
+- Phân tích các yếu tố ảnh hưởng đến giá nhà:
+  - Chất lượng tổng thể
+  - Diện tích sử dụng
+  - Diện tích tầng hầm
+  - Số phòng tắm
+  - Số chỗ để xe
+  - Năm xây dựng
+  - Khu vực sinh sống
 
-Các mô hình được đánh giá bằng **5-fold cross-validation** trên tập huấn luyện. Mô hình cuối cùng được lựa chọn dựa trên CV RMSE, không dựa trên kết quả của tập test.
+- Xây dựng mô hình hồi quy để dự đoán giá bán nhà.
+
+- So sánh hiệu quả giữa các mô hình Machine Learning.
+
+- Đánh giá mô hình bằng các chỉ số:
+  - MAE
+  - RMSE
+  - R²
+
+- Xây dựng ứng dụng Web bằng Streamlit để người dùng nhập thông tin căn nhà và nhận giá dự đoán.
+
+## 📂 Dataset
+
+- Nguồn dữ liệu: Ames Housing Dataset
+- File dữ liệu: `data/train.csv`
+- Số lượng bản ghi: khoảng `1,460`
+- Số lượng đặc trưng ban đầu: khoảng `80`
+- Biến mục tiêu: `SalePrice`
+- Loại bài toán: Regression
+- Đơn vị giá: USD
+
+## 🔎 Một số đặc trưng quan trọng
+
+- `OverallQual` – Chất lượng tổng thể của căn nhà
+- `GrLivArea` – Diện tích sử dụng trên mặt đất
+- `TotalBsmtSF` – Tổng diện tích tầng hầm
+- `GarageCars` – Số ô tô garage có thể chứa
+- `GarageArea` – Diện tích garage
+- `FullBath` – Số phòng tắm đầy đủ
+- `BedroomAbvGr` – Số phòng ngủ
+- `YearBuilt` – Năm xây dựng
+- `YearRemodAdd` – Năm sửa chữa gần nhất
+- `Neighborhood` – Khu vực sinh sống
+- `1stFlrSF` – Diện tích tầng một
+- `2ndFlrSF` – Diện tích tầng hai
+- `Fireplaces` – Số lượng lò sưởi
+- `SalePrice` – Giá bán của căn nhà
+
+## 🛠️ Feature Engineering
+
+Dự án tạo thêm một số đặc trưng mới:
+
+- `HouseAge` – Tuổi của căn nhà tại thời điểm bán
+- `RemodAge` – Số năm kể từ lần sửa chữa gần nhất
+- `TotalSF` – Tổng diện tích tầng hầm, tầng một và tầng hai
+- `TotalBath` – Tổng số phòng tắm
+- `TotalPorchSF` – Tổng diện tích hiên nhà
+- `HasGarage` – Căn nhà có garage hay không
+- `HasBsmt` – Căn nhà có tầng hầm hay không
+- `HasFireplace` – Căn nhà có lò sưởi hay không
+
+## 🔄 Pipeline thực hiện
+
+### 1. Khám phá dữ liệu
+
+- Kiểm tra kích thước dữ liệu
+- Kiểm tra kiểu dữ liệu
+- Phân tích giá trị thiếu
+- Phân tích phân phối của `SalePrice`
+- Kiểm tra tương quan giữa các đặc trưng
+- Phát hiện một số giá trị ngoại lệ
+
+### 2. Tiền xử lý dữ liệu
+
+- Xử lý giá trị thiếu
+- Điền median cho dữ liệu số
+- Điền giá trị xuất hiện nhiều nhất cho dữ liệu phân loại
+- Chuẩn hóa dữ liệu số bằng `RobustScaler`
+- Mã hóa biến phân loại bằng `OneHotEncoder`
+- Đưa toàn bộ quá trình tiền xử lý vào `Pipeline`
+
+### 3. Chia dữ liệu
+
+- Chia dữ liệu theo tỷ lệ:
+  - Train: 80%
+  - Test: 20%
+- Sử dụng `random_state=42`
+- Chỉ xử lý ngoại lệ trên tập train
+- Giữ nguyên tập test để đánh giá cuối cùng
+
+### 4. Huấn luyện mô hình
+
+Các mô hình được sử dụng:
+
+- Linear Regression
+- Ridge Regression
+- Lasso Regression
+
+Mô hình được đánh giá bằng 5-fold cross-validation.
+
+### 5. Tuning mô hình
+
+- Sử dụng `GridSearchCV`
+- Tuning tham số `alpha` cho Ridge và Lasso
+- Chọn mô hình dựa trên CV RMSE
+- Không lựa chọn mô hình dựa trực tiếp trên tập test
+
+### 6. Đánh giá mô hình
+
+Các chỉ số đánh giá:
+
+- MAE – Sai số tuyệt đối trung bình
+- RMSE – Căn bậc hai của sai số bình phương trung bình
+- R² – Mức độ giải thích biến thiên của giá nhà
+
+### 7. Triển khai
+
+- Lưu model bằng Joblib
+- Tích hợp model vào ứng dụng Streamlit
+- Cho phép người dùng nhập thông tin căn nhà
+- Hiển thị giá nhà dự đoán theo đơn vị USD
+
+## 🤖 Các mô hình sử dụng
+
+- Linear Regression
+- Ridge Regression
+- Lasso Regression
+
+Mô hình có kết quả cross-validation tốt nhất là **Lasso Regression**.
+
+## 📊 Kết quả mô hình
 
 ### Kết quả cross-validation
 
-| Model             |           CV RMSE |            CV MAE |      CV R² |
-| ----------------- | ----------------: | ----------------: | ---------: |
-| Lasso Regression  | **19,629.33 USD** | **13,516.27 USD** | **0.9351** |
-| Ridge Regression  |     19,734.29 USD |     13,559.35 USD |     0.9343 |
-| Linear Regression |     23,042.10 USD |     15,054.95 USD |     0.9106 |
-
-Lasso Regression đạt CV RMSE thấp nhất và được lựa chọn làm mô hình cuối cùng.
+| Model | CV RMSE | CV MAE | CV R² |
+|---|---:|---:|---:|
+| Lasso Regression | **19,629.33 USD** | **13,516.27 USD** | **0.9351** |
+| Ridge Regression | 19,734.29 USD | 13,559.35 USD | 0.9343 |
+| Linear Regression | 23,042.10 USD | 15,054.95 USD | 0.9106 |
 
 ### Kết quả trên tập test
 
-Tập test được giữ riêng và chỉ sử dụng một lần sau khi hoàn tất quá trình lựa chọn mô hình.
+| Chỉ số | Kết quả |
+|---|---:|
+| MAE | 14,105.60 USD |
+| RMSE | 21,111.96 USD |
+| R² | 0.9419 |
 
-| Chỉ số    |       Kết quả |
-| --------- | ------------: |
-| Test MAE  | 14,105.60 USD |
-| Test RMSE | 21,111.96 USD |
-| Test R²   |        0.9419 |
+Kết quả cho thấy mô hình có khả năng dự đoán khá tốt trên tập dữ liệu Ames Housing.
 
-Kết quả cho thấy mô hình giải thích được khoảng **94.19% sự biến thiên của giá nhà** trên tập test.
+## ⚙️ Cài đặt và chạy dự án
 
----
+### Yêu cầu
 
-## Chức năng chính
+- Python 3.8 trở lên
+- Git
+- pip
 
-* Phân tích dữ liệu khám phá bằng biểu đồ và thống kê mô tả.
-* Kiểm tra và xử lý các giá trị bị thiếu.
-* Xử lý các biến phân loại dạng nominal và ordinal.
-* Tạo thêm các đặc trưng liên quan đến tuổi nhà, diện tích và tiện ích.
-* Xử lý ngoại lệ trên tập huấn luyện.
-* Xây dựng preprocessing pipeline bằng scikit-learn.
-* So sánh Linear Regression, Ridge Regression và Lasso Regression.
-* Tối ưu siêu tham số bằng GridSearchCV.
-* Đánh giá mô hình bằng MAE, RMSE và R² trên đơn vị USD.
-* Lưu toàn bộ pipeline bằng Joblib.
-* Xây dựng giao diện dự đoán giá nhà bằng Streamlit.
+### Clone repository
 
----
 
-## Bộ dữ liệu
+git clone https://github.com/HieuGit05/ames-house-price-prediction.git
+cd ames-house-price-prediction
+Tạo môi trường ảo
+Windows
+python -m venv .venv
+.venv\Scripts\activate
+macOS/Linux
+python3 -m venv .venv
+source .venv/bin/activate
+Cài đặt thư viện
+pip install -r requirements.txt
+📓 Chạy notebook
 
-Dự án sử dụng bộ dữ liệu **Ames Housing** từ cuộc thi House Prices trên Kaggle.
+Mở Jupyter Notebook:
 
-Thông tin chính:
+jupyter notebook
 
-* Số lượng quan sát: `1,460`
-* Số biến đầu vào ban đầu: `80`
-* Biến mục tiêu: `SalePrice`
-* Loại bài toán: Regression
-* Đơn vị giá: USD
+Sau đó mở file:
 
-Bộ dữ liệu mô tả nhiều đặc điểm của căn nhà như:
+notebooks/houseprice_rewritten.ipynb
 
-* Chất lượng tổng thể.
-* Diện tích sử dụng.
-* Diện tích tầng hầm.
-* Số phòng tắm.
-* Số chỗ để xe.
-* Năm xây dựng.
-* Khu vực sinh sống.
-* Chất lượng vật liệu và nội thất.
+Chọn:
 
----
+Cell → Run All
 
-## Feature engineering
+để chạy toàn bộ quy trình phân tích và huấn luyện mô hình.
 
-Dự án tạo thêm một số đặc trưng nhằm tổng hợp thông tin từ các biến ban đầu.
+🌐 Chạy ứng dụng Web
 
-| Feature        | Ý nghĩa                                               |
-| -------------- | ----------------------------------------------------- |
-| `HouseAge`     | Tuổi của căn nhà tại thời điểm bán                    |
-| `RemodAge`     | Số năm kể từ lần sửa chữa gần nhất                    |
-| `TotalSF`      | Tổng diện tích tầng hầm, tầng một và tầng hai         |
-| `TotalBath`    | Tổng số phòng tắm, có tính trọng số cho phòng tắm nhỏ |
-| `TotalPorchSF` | Tổng diện tích các khu vực hiên nhà                   |
-| `HasGarage`    | Căn nhà có garage hay không                           |
-| `HasBsmt`      | Căn nhà có tầng hầm hay không                         |
-| `HasFireplace` | Căn nhà có lò sưởi hay không                          |
+Chạy Streamlit:
 
-Ví dụ:
+streamlit run app/app.py
 
-```python
-df["HouseAge"] = df["YrSold"] - df["YearBuilt"]
+Truy cập địa chỉ:
 
-df["TotalSF"] = (
-    df["TotalBsmtSF"]
-    + df["1stFlrSF"]
-    + df["2ndFlrSF"]
-)
+http://localhost:8501
 
-df["TotalBath"] = (
-    df["FullBath"]
-    + 0.5 * df["HalfBath"]
-    + df["BsmtFullBath"]
-    + 0.5 * df["BsmtHalfBath"]
-)
-```
+Người dùng nhập các thông tin của căn nhà và hệ thống sẽ trả về giá dự đoán.
 
----
-
-## Quy trình xây dựng mô hình
-
-Quy trình huấn luyện được tổ chức theo thứ tự:
-
-1. Đọc và kiểm tra dữ liệu.
-2. Phân tích dữ liệu khám phá.
-3. Chia dữ liệu thành tập train và test.
-4. Loại ngoại lệ chỉ trên tập train.
-5. Tạo các đặc trưng mới.
-6. Phân chia numerical features và categorical features.
-7. Xây dựng preprocessing pipeline.
-8. Đánh giá các baseline model bằng cross-validation.
-9. Tối ưu Ridge và Lasso bằng GridSearchCV.
-10. Chọn mô hình dựa trên CV RMSE.
-11. Huấn luyện mô hình được chọn trên toàn bộ tập train.
-12. Đánh giá một lần trên tập test.
-13. Lưu pipeline và metadata của mô hình.
-14. Sử dụng model trong ứng dụng Streamlit.
-
-Quy trình này giúp hạn chế data leakage và đảm bảo kết quả đánh giá khách quan hơn.
-
----
-
-## Tiền xử lý dữ liệu
-
-### Numerical features
-
-Các biến số được xử lý bằng:
-
-* `SimpleImputer(strategy="median")`
-* `RobustScaler()`
-
-`RobustScaler` được sử dụng vì ít bị ảnh hưởng bởi các giá trị ngoại lệ hơn StandardScaler.
-
-### Categorical features
-
-Các biến phân loại được xử lý bằng:
-
-* `SimpleImputer(strategy="most_frequent")`
-* `OneHotEncoder(handle_unknown="ignore")`
-
-Thiết lập `handle_unknown="ignore"` giúp pipeline vẫn dự đoán được khi dữ liệu mới xuất hiện category chưa từng có trong tập huấn luyện.
-
-### Target transformation
-
-Biến mục tiêu `SalePrice` có phân phối lệch phải, vì vậy dự án sử dụng phép biến đổi logarithm:
-
-```python
-y_log = np.log1p(y)
-```
-
-Khi dự đoán, kết quả được chuyển lại về đơn vị USD:
-
-```python
-y_pred = np.expm1(y_pred_log)
-```
-
----
-
-## Các mô hình được sử dụng
-
-### Linear Regression
-
-Được sử dụng làm baseline để so sánh với các mô hình có regularization.
-
-### Ridge Regression
-
-Ridge sử dụng L2 regularization để giảm ảnh hưởng của đa cộng tuyến và hạn chế hệ số mô hình quá lớn.
-
-### Lasso Regression
-
-Lasso sử dụng L1 regularization, có khả năng đưa một số hệ số về 0 và thực hiện lựa chọn đặc trưng gián tiếp.
-
-Sau quá trình cross-validation và tuning, Lasso Regression đạt CV RMSE tốt nhất và được chọn làm mô hình cuối cùng.
-
----
-
-## Cấu trúc dự án
-
-```text
+📁 Cấu trúc thư mục
 ames-house-price-prediction/
 ├── app/
 │   └── app.py
-│
 ├── data/
 │   └── train.csv
-│
 ├── models/
 │   ├── house_price_model.pkl
 │   └── metrics.json
-│
 ├── notebooks/
-│   └── house_price_analysis.ipynb
-│
-├── reports/
-│
-├── src/
-│   └── train.py
-│
+│   └── houseprice_rewritten.ipynb
 ├── .gitignore
-├── LICENSE
 ├── README.md
 └── requirements.txt
-```
 
-### Mô tả thư mục
+Trong đó:
 
-* `app/`: chứa ứng dụng Streamlit.
-* `data/`: chứa dữ liệu sử dụng trong dự án.
-* `models/`: chứa model đã huấn luyện và kết quả đánh giá.
-* `notebooks/`: chứa notebook phân tích và xây dựng mô hình.
-* `reports/`: có thể chứa báo cáo, slide hoặc hình ảnh kết quả.
-* `src/`: chứa script huấn luyện có thể chạy lại.
-* `requirements.txt`: danh sách thư viện cần cài đặt.
-
----
-
-## Cài đặt dự án
-
-### 1. Clone repository
-
-```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd ames-house-price-prediction
-```
-
-### 2. Tạo môi trường ảo
-
-```bash
-python -m venv .venv
-```
-
-### 3. Kích hoạt môi trường
-
-Windows:
-
-```bash
-.venv\Scripts\activate
-```
-
-Linux hoặc macOS:
-
-```bash
-source .venv/bin/activate
-```
-
-### 4. Cài đặt thư viện
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Huấn luyện lại mô hình
-
-Để chạy toàn bộ quá trình preprocessing, cross-validation, tuning và lưu model:
-
-```bash
-python src/train.py
-```
-
-Sau khi chạy thành công, model và metrics sẽ được lưu trong thư mục:
-
-```text
-models/
-├── house_price_model.pkl
-└── metrics.json
-```
-
----
-
-## Chạy ứng dụng Streamlit
-
-```bash
-streamlit run app/app.py
-```
-
-Sau đó mở địa chỉ được Streamlit hiển thị trong terminal, thông thường là:
-
-```text
-http://localhost:8501
-```
-
-Ứng dụng cho phép người dùng nhập các thông tin cơ bản của căn nhà và nhận kết quả dự đoán giá bán.
-
----
-
-## Công nghệ sử dụng
-
-* Python
-* Pandas
-* NumPy
-* Matplotlib
-* scikit-learn
-* Joblib
-* Streamlit
-* Jupyter Notebook
-
----
-
-## Hạn chế của dự án
-
-* Bộ dữ liệu chỉ phản ánh thị trường nhà ở tại Ames, Iowa.
-* Mô hình không thể áp dụng trực tiếp cho thị trường bất động sản Việt Nam.
-* Một số biến ordinal được xử lý như categorical features để đơn giản hóa pipeline.
-* Các mô hình tuyến tính có thể chưa biểu diễn tốt những quan hệ phi tuyến phức tạp.
-* Ứng dụng Streamlit chỉ sử dụng một nhóm đặc trưng quan trọng để người dùng dễ nhập dữ liệu.
-* Chưa có automated testing.
-* Chưa có CI/CD.
-* Chưa triển khai theo dõi chất lượng model sau deployment.
-
----
-
-## Hướng phát triển
-
-Trong tương lai, dự án có thể được cải thiện theo các hướng:
-
-* So sánh với Random Forest, Gradient Boosting, XGBoost và LightGBM.
-* Sử dụng SHAP để giải thích ảnh hưởng của từng đặc trưng.
-* Thêm biểu đồ feature importance.
-* Xây dựng unit test cho feature engineering và inference.
-* Thêm GitHub Actions để kiểm tra code tự động.
-* Tạo Dockerfile để chuẩn hóa môi trường chạy.
-* Deploy ứng dụng trên Streamlit Community Cloud.
-* Xây dựng API dự đoán bằng FastAPI.
-* Theo dõi model performance và data drift.
-
----
-
-## Tác giả
-
-**Đặng Trung Hiếu**
-
-Sinh viên năm 4, định hướng AI/Machine Learning.
-
-* Lĩnh vực quan tâm: Machine Learning, Data Science và Natural Language Processing.
-* Mục tiêu: tìm kiếm cơ hội thực tập AI/Machine Learning và phát triển các dự án có khả năng ứng dụng thực tế.
-
----
-
-## License
-
-Dự án được phát hành theo giấy phép MIT License.
+app/: chứa source code ứng dụng Streamlit
+data/: chứa dữ liệu gốc
+models/: chứa model đã huấn luyện và file metrics
+notebooks/: chứa notebook phân tích và xây dựng mô hình
+.gitignore: khai báo các file không đưa lên GitHub
+requirements.txt: danh sách thư viện cần cài đặt
+README.md: mô tả dự án
+🧰 Công nghệ sử dụng
+Python
+Pandas
+NumPy
+Matplotlib
+Scikit-learn
+Joblib
+Streamlit
+Jupyter Notebook
+⚠️ Hạn chế
+Bộ dữ liệu chỉ phản ánh thị trường nhà ở tại Ames, Iowa.
+Mô hình chưa thể áp dụng trực tiếp cho thị trường bất động sản Việt Nam.
+Dự án mới thử nghiệm các mô hình hồi quy tuyến tính.
+Ứng dụng Streamlit còn đơn giản.
+Chưa có automated testing.
+Chưa có CI/CD.
+Chưa triển khai model trên server thực tế.
+🚀 Hướng phát triển
+Thử nghiệm Random Forest
+Thử nghiệm Gradient Boosting
+Thử nghiệm XGBoost hoặc LightGBM
+Sử dụng SHAP để giải thích kết quả dự đoán
+Thêm biểu đồ feature importance
+Viết unit test cho phần xử lý dữ liệu
+Deploy ứng dụng lên Streamlit Community Cloud
+Xây dựng API bằng FastAPI
+👨‍💻 Tác giả
+Đặng Trung Hiếu
