@@ -145,7 +145,7 @@ Mô hình có kết quả cross-validation tốt nhất là **Lasso Regression**
 | Ridge Regression | 19,734.29 USD | 13,559.35 USD | 0.9343 |
 | Linear Regression | 23,042.10 USD | 15,054.95 USD | 0.9106 |
 
-### Kết quả trên tập test
+### Kết quả trên tập test tốt nhất là lasso
 
 | Chỉ số | Kết quả |
 |---|---:|
